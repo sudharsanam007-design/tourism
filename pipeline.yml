@@ -1,0 +1,50 @@
+name: End-to-End MLOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ml-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Data loading & preprocessing
+      - name: Run data preparation
+        run: |
+          python src/data_preparation.py
+
+      # Step 5: Model training & tuning
+      - name: Train model
+        run: |
+          python src/train.py
+
+      # Step 6: Model evaluation
+      - name: Evaluate model
+        run: |
+          python src/evaluate.py
+
+      # Step 7: Sanity check inference
+      - name: Run inference test
+        run: |
+          python src/predict.py
